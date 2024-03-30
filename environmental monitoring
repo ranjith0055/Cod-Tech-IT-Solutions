@@ -1,0 +1,50 @@
+// Libraries
+#include <Arduino.h>
+#include <DHT.h>
+
+// Pin Definitions
+const int dhtPin = 2;        // Digital pin for DHT sensor
+const int mq135Pin = A0;     // Analog pin for MQ135 sensor
+
+// Constants
+const int DHT_TYPE = DHT11;  // Type of DHT sensor (DHT11 or DHT22)
+
+// Objects
+DHT dht(dhtPin, DHT_TYPE);   // Initialize DHT sensor object
+
+// Variables
+float temperature;
+float humidity;
+
+// Setup
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+  
+  // Initialize DHT sensor
+  dht.begin();
+}
+
+// Main loop
+void loop() {
+  // Read temperature and humidity
+  temperature = dht.readTemperature();
+  humidity = dht.readHumidity();
+  
+  // Print temperature and humidity to serial monitor
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.print(" °C, Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+  
+  // Read air quality from MQ135 sensor
+  int airQuality = analogRead(mq135Pin);
+  
+  // Print air quality to serial monitor
+  Serial.print("Air Quality: ");
+  Serial.println(airQuality);
+  
+  // Delay before next reading
+  delay(2000);  // Adjust delay as needed
+}
