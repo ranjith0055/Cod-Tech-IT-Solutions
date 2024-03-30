@@ -1,0 +1,48 @@
+// Libraries
+#include <Arduino.h>
+
+// Pin Definitions
+const int ldrPin = A0;       // Analog pin for LDR
+const int relayPin = 7;      // Digital pin for relay
+
+// Constants
+const int lightThreshold = 500;   // Threshold value for light level
+
+// Variables
+int ldrValue = 0;
+bool lightsOn = false;
+
+// Setup
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+  
+  // Set relay pin as output
+  pinMode(relayPin, OUTPUT);
+}
+
+// Main loop
+void loop() {
+  // Read LDR value
+  ldrValue = analogRead(ldrPin);
+  
+  // Print LDR value to serial monitor
+  Serial.print("LDR Value: ");
+  Serial.println(ldrValue);
+  
+  // Check if ambient light is below threshold
+  if (ldrValue < lightThreshold && !lightsOn) {
+    // Turn on room lights
+    digitalWrite(relayPin, HIGH);
+    Serial.println("Lights turned on.");
+    lightsOn = true;
+  } else if (ldrValue >= lightThreshold && lightsOn) {
+    // Turn off room lights
+    digitalWrite(relayPin, LOW);
+    Serial.println("Lights turned off.");
+    lightsOn = false;
+  }
+  
+  // Delay before next reading
+  delay(1000);  // Adjust delay as needed
+}
