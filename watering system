@@ -1,0 +1,50 @@
+// Libraries
+#include <Arduino.h>
+
+// Pin Definitions
+const int soilMoisturePin = A0;  // Analog pin for soil moisture sensor
+const int pumpPin = 7;           // Digital pin for water pump
+
+// Constants
+const int dryThreshold = 500;     // Threshold value for dry soil
+const int pumpDuration = 5000;    // Pump activation duration in milliseconds
+
+// Variables
+int soilMoistureValue = 0;
+
+// Setup
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+  
+  // Set pump pin as output
+  pinMode(pumpPin, OUTPUT);
+}
+
+// Function to activate water pump
+void activatePump() {
+  digitalWrite(pumpPin, HIGH);  // Turn on pump
+  delay(pumpDuration);           // Pump for specified duration
+  digitalWrite(pumpPin, LOW);   // Turn off pump
+  Serial.println("Watering completed.");
+}
+
+// Main loop
+void loop() {
+  // Read soil moisture value
+  soilMoistureValue = analogRead(soilMoisturePin);
+  
+  // Print soil moisture value to serial monitor
+  Serial.print("Soil Moisture: ");
+  Serial.println(soilMoistureValue);
+  
+  // Check if soil is dry
+  if (soilMoistureValue < dryThreshold) {
+    // Soil is dry, activate water pump
+    Serial.println("Soil is dry. Watering...");
+    activatePump();
+  }
+  
+  // Delay before next reading
+  delay(1000);  // Adjust delay as needed
+}
